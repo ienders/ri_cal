@@ -57,4 +57,13 @@ ENDDATA
       end
     end
   end
+
+  it "should not raise an error with Ambigous times" do
+    tz = RiCal::Component::TZInfoTimezone.new(TZInfo::Timezone.get("America/New_York"))
+    local_start = DateTime.parse("2011-11-06T01:30:00+00:00")
+    # This time appears twice. Because at 2:00 am the clock falls back to 1:00 am again
+    local_end = DateTime.parse("Nov 30, 2012")
+    lambda { tz.export_local_to(StringIO.new, local_start, local_end) }.should_not raise_error(TZInfo::AmbiguousTime)
+  end
+
 end
